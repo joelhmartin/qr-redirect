@@ -29,7 +29,7 @@ export default function Home() {
     };
     if (qrName.length < 3) return;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/qrs`,
+      `/api/qrs`,
       postData
     );
     const response = await res.json();
@@ -54,7 +54,7 @@ export default function Home() {
       },
     };
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/qrs`,
+      `/api/qrs`,
       postData
     );
     const response = await res.json();
@@ -74,7 +74,7 @@ export default function Home() {
       }),
     };
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/qrs`,
+      `/api/qrs`,
       postData
     );
     const response = await res.json();
@@ -100,7 +100,7 @@ export default function Home() {
       }),
     };
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/qrs`,
+      `/api/qrs`,
       postData
     );
     const response = await res.json();
