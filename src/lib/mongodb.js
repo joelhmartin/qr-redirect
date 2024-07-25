@@ -1,9 +1,14 @@
-// lib/mongodb.js
-
-import { MongoClient } from "mongodb";
+// src/lib/mongodb.js
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
-const options = {};
+const options = {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+};
 
 let client;
 let clientPromise;
@@ -23,4 +28,5 @@ if (process.env.NODE_ENV === 'development') {
   clientPromise = client.connect();
 }
 
+console.log("MongoDB connected (development mode)");
 export default clientPromise;

@@ -8,7 +8,7 @@ export default function Home() {
   const qrIDToDeleteRef = useRef();
   const qrIDToUpdateRef = useRef();
   const qrNameToUpdateRef = useRef();
-  const [qrs, setqrs] = useState([]);
+  const [qrs, setqrs] = useState([]); // Initialize with an empty array
   const [updated, setUpdated] = useState(false);
   const [updatedError, setUpdatedError] = useState(false);
   const [created, setCreated] = useState(false);
@@ -29,7 +29,7 @@ export default function Home() {
     };
     const res = await fetch("/api/qr", postData);
     const response = await res.json();
-    console.log(response);
+    console.log(response)
     if (response.response.message !== "success") return;
     const newqr = response.response.qr;
     setqrs([
@@ -43,15 +43,15 @@ export default function Home() {
   }
 
   async function getQrs() {
-    const res = await fetch("/api/qr", {
+    const postData = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-    });
+    };
+    const res = await fetch("/api/qr", postData);
     const response = await res.json();
     setqrs(response.qrs);
-    console.log(response);
   }
 
   async function deleteQr(id) {
@@ -67,10 +67,8 @@ export default function Home() {
     };
     const res = await fetch("/api/qr", postData);
     const response = await res.json();
-    console.log(response.response);
     if (response.response.message === "error") return setDeletedError(true);
-    const idToRemove = parseFloat(response.response.qr_id);
-    setqrs(qrs.filter((a) => a.qr_id !== idToRemove));
+    setqrs(qrs.filter((a) => a.qr_id !== id));
     setDeleted(true);
   }
 
@@ -91,19 +89,13 @@ export default function Home() {
     const res = await fetch("/api/qr", postData);
     const response = await res.json();
     if (response.response.message === "error") return setUpdatedError(true);
-    const qrIdUpdated = parseFloat(response.response.qr.qr_id);
+    const qrIdUpdated = response.response.qr.qr_id;
     const qrUpdatedName = response.response.qr.qr_name;
     const qrsStateAfterUpdate = qrs.map((qr) => {
       if (qr.qr_id === qrIdUpdated) {
-        return {
-          ...qr,
-          qr_name: qrUpdatedName,
-        };
-      } else {
-        return {
-          ...qr,
-        };
+        return { ...qr, qr_name: qrUpdatedName };
       }
+      return qr;
     });
     setUpdated(true);
     setqrs(qrsStateAfterUpdate);
@@ -126,16 +118,16 @@ export default function Home() {
           <div className={styles.read}>
             <h2>Read</h2>
             <div className={styles.qrs}>
-              {qrs.map((item) => (
-                <div key={item.qr_id} className={styles.qr}>
-                  <span>qr_id</span>: {item.qr_id} <br /> <span>qr_name</span>: {item.qr_name}{" "}
-                  <CiTrash
-                    className={styles.icons}
-                    onClick={() => deleteQr(item.qr_id)}
-                  />
-                </div>
-              ))}
-              {!qrs.length ? <>No qrs found</> : null}
+              {Array.isArray(qrs) && qrs.length > 0 ? (
+                qrs.map((item) => (
+                  <div key={item.qr_id} className={styles.qr}>
+                    <span>qr_id</span>: {item.qr_id} <br /> <span>qr_name</span>: {item.qr_name}{" "}
+                    <CiTrash className={styles.icons} onClick={() => deleteQr(item.qr_id)} />
+                  </div>
+                ))
+              ) : (
+                <div>No qrs found</div>
+              )}
             </div>
           </div>
         </section>
@@ -148,12 +140,7 @@ export default function Home() {
             </div>
             {created ? <div className={styles.success}>Success!</div> : null}
             <div className={styles.buttonarea}>
-              <input
-                className={styles.button}
-                value="Save"
-                type="button"
-                onClick={addQr}
-              />
+              <input className={styles.button} value="Save" type="button" onClick={addQr} />
             </div>
           </div>
         </section>
@@ -171,12 +158,7 @@ export default function Home() {
             {updated ? <div className={styles.success}>Success!</div> : null}
             {updatedError ? <div className={styles.error}>Error!</div> : null}
             <div className={styles.buttonarea}>
-              <input
-                className={styles.button}
-                value="Update"
-                type="button"
-                onClick={updateQr}
-              />
+              <input className={styles.button} value="Update" type="button" onClick={updateQr} />
             </div>
           </div>
         </section>
@@ -190,14 +172,7 @@ export default function Home() {
             {deleted ? <div className={styles.success}>Success!</div> : null}
             {deletedError ? <div className={styles.error}>Error!</div> : null}
             <div className={styles.buttonarea}>
-              <input
-                className={`${styles.button} ${styles.warning}`}
-                value="Delete"
-                type="button"
-                onClick={() =>
-                  deleteQr(qrIDToDeleteRef.current.value)
-                }
-              />
+              <input className={`${styles.button} ${styles.warning}`} value="Delete" type="button" onClick={() => deleteQr(qrIDToDeleteRef.current.value)} />
             </div>
           </div>
         </section>
