@@ -138,19 +138,6 @@ export default function Home() {
         <title>QR Redirect App</title>
       </Head>
       <div className={styles.container}>
-        {/* Rest of the code */}
-      </div>
-    </>
-  );
-
-  return (
-    <>
-      {" "}
-      
-      <Head>
-        <title>QR Redirect App</title>
-      </Head>
-      <div className={styles.container}>
         <section className={styles.main}>
           <h1>QR Redirect App</h1>
         </section>
