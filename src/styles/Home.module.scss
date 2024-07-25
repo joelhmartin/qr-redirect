@@ -81,14 +81,25 @@
         margin-bottom: 1rem;
         padding-bottom: 0.4rem;
         border-bottom: 1px solid grey;
+    
         .qrContainer {
           display: flex;
           gap: 3px;
           align-items: center;
           justify-content: space-between;
+    
           .qrBit {
             padding: 5px;
             line-height: 1.5;
+    
+            &.firstBox {
+              flex: 0 0 40%; /* First box takes up 40% */
+            }
+    
+            &.otherBox {
+              flex: 0 0 15%; /* Other boxes take up 15% each */
+            }
+    
             span {
               background: black;
               color: white;
@@ -96,6 +107,7 @@
               padding: 0.2rem 0.4rem;
               border-radius: 5px;
             }
+    
             img {
               display: block;
               width: 100px;
@@ -106,8 +118,7 @@
           }
         }
       }
-
-    }
+    }    
     .input {
       width: 100%;
       margin-bottom: 1rem;

@@ -145,7 +145,7 @@ export default function Home() {
             {qrs.map((item) => (
               <div key={item._id} className={styles.qr}>
                 <div className={styles.qrContainer}>
-                  <div className={styles.qrBit}><span>id</span> {`http://localhost:3000/redirect?id=${item._id}`} </div>
+                  <div className={styles.qrBit}><span>id</span> {`https://qr-redirect-app-3d71bbb92e78.herokuapp.com/redirect?id=${item._id}`} </div>
                   <div className={styles.qrBit}><span>name</span> {item.name} </div>
                   <div className={styles.qrBit}><span>URL</span> {item.URL}{" "}</div>
                   <div className={styles.qrContainer}>
