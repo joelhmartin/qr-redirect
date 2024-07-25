@@ -27,11 +27,7 @@ export default function Home() {
         qr_name: qrName,
       }),
     };
-    if (qrName.length < 3) return;
-    const res = await fetch(
-      `/api/qrs`,
-      postData
-    );
+    const res = await fetch("/api/qr", postData);
     const response = await res.json();
     console.log(response);
     if (response.response.message !== "success") return;
@@ -47,16 +43,12 @@ export default function Home() {
   }
 
   async function getQrs() {
-    const postData = {
+    const res = await fetch("/api/qr", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-    };
-    const res = await fetch(
-      `/api/qrs`,
-      postData
-    );
+    });
     const response = await res.json();
     setqrs(response.qrs);
     console.log(response);
@@ -73,10 +65,7 @@ export default function Home() {
         qr_id: id,
       }),
     };
-    const res = await fetch(
-      `/api/qrs`,
-      postData
-    );
+    const res = await fetch("/api/qr", postData);
     const response = await res.json();
     console.log(response.response);
     if (response.response.message === "error") return setDeletedError(true);
@@ -99,23 +88,17 @@ export default function Home() {
         qr_name: qrNameToUpdate,
       }),
     };
-    const res = await fetch(
-      `/api/qrs`,
-      postData
-    );
+    const res = await fetch("/api/qr", postData);
     const response = await res.json();
     if (response.response.message === "error") return setUpdatedError(true);
-    // if (response.response.message !== "success") return;
     const qrIdUpdated = parseFloat(response.response.qr.qr_id);
     const qrUpdatedName = response.response.qr.qr_name;
-    //updating state
     const qrsStateAfterUpdate = qrs.map((qr) => {
       if (qr.qr_id === qrIdUpdated) {
-        const qrUpdated = {
+        return {
           ...qr,
           qr_name: qrUpdatedName,
         };
-        return qrUpdated;
       } else {
         return {
           ...qr,
@@ -132,8 +115,6 @@ export default function Home() {
 
   return (
     <>
-      {" "}
-      
       <Head>
         <title>QR Redirect App</title>
       </Head>
@@ -145,18 +126,15 @@ export default function Home() {
           <div className={styles.read}>
             <h2>Read</h2>
             <div className={styles.qrs}>
-              {qrs.map((item, index) => {
-                return (
-                  <div key={item.qr_id} className={styles.qr}>
-                    <span>qr_id</span>: {item.qr_id} <br />{" "}
-                    <span>qr_name</span>: {item.qr_name}{" "}
-                    <CiTrash
-                      className={styles.icons}
-                      onClick={() => deleteQr(item.qr_id)}
-                    />
-                  </div>
-                );
-              })}
+              {qrs.map((item) => (
+                <div key={item.qr_id} className={styles.qr}>
+                  <span>qr_id</span>: {item.qr_id} <br /> <span>qr_name</span>: {item.qr_name}{" "}
+                  <CiTrash
+                    className={styles.icons}
+                    onClick={() => deleteQr(item.qr_id)}
+                  />
+                </div>
+              ))}
               {!qrs.length ? <>No qrs found</> : null}
             </div>
           </div>
@@ -224,9 +202,7 @@ export default function Home() {
           </div>
         </section>
         <footer>
-          <p>
-            Create, Read, Update, Delete QR Redirects{" "}
-          </p>
+          <p>Create, Read, Update, Delete QR Redirects</p>
         </footer>
       </div>
     </>
