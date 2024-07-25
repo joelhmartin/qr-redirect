@@ -1,7 +1,3 @@
-// pages/auth/signin.js
-
-import { signIn } from "next-auth/client";
-
 export default function SignIn() {
   return (
     <div>
@@ -16,3 +12,4 @@ export default function SignIn() {
     </div>
   );
 }
+
