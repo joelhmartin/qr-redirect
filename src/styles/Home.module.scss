@@ -1,6 +1,5 @@
 @use "@/styles/base/mixin" as mixin;
 .container {
-  border: 1px solid black;
   padding: 1.4rem 0.7rem 2rem;
   @include mixin.small {
     padding: 1.4rem 1.3rem 2rem;
@@ -11,7 +10,6 @@
   a {
     text-decoration: inherit;
     display: inline-block;
-    border-bottom: 1px solid black;
     &:hover {
       background-color: rgb(217, 217, 217);
     }
@@ -24,18 +22,17 @@
     a {
       text-decoration: inherit;
       display: inline-block;
-      border-bottom: 1px solid black;
     }
   }
   footer {
     margin: 0 auto;
     padding: 1rem 1rem 1rem;
-    max-width: 800px;
+    max-width: 1440px;
   }
   section {
     margin: 0 auto;
     padding: 1rem 1rem 1rem;
-    max-width: 800px;
+    max-width: 1440px;
     border-top: 5px solid black;
     @include mixin.small {
       padding: 2rem 1rem 2rem;
@@ -51,37 +48,65 @@
       padding: 2.5rem 1rem 2.8rem;
     }
     .icons {
+      color: white;
       cursor: pointer;
+      width: 30px;
+      height: 30px;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .icons:hover {
+      background-color: rgb(217, 217, 217);
+      color: black
     }
     .success {
       margin-bottom: 1rem;
       font-weight: 700;
       color: green;
     }
+    .editIcon {
+      background: blue; // example style for the edit icon
+    }
+    .trashIcon {
+      background: red; // example style for the trash icon
+    }
     .error {
       margin-bottom: 1rem;
       font-weight: 700;
       color: rgb(175, 3, 3);
     }
-    .products {
-      height: 100px;
-      overflow: scroll;
-      .product {
+    .qrs {
+      .qr {
         line-height: 1.5;
         margin-bottom: 1rem;
         padding-bottom: 0.4rem;
         border-bottom: 1px solid grey;
-        span {
-          font-weight: 600;
-        }
-        img {
-          display: block;
-          width: 100px;
-          border-radius: 10px;
-          height: 100px;
-          object-fit: cover;
+        .qrContainer {
+          display: flex;
+          gap: 3px;
+          align-items: center;
+          justify-content: space-between;
+          .qrBit {
+            padding: 5px;
+            line-height: 1.5;
+            span {
+              background: black;
+              color: white;
+              font-weight: 600;
+              padding: 0.2rem 0.4rem;
+              border-radius: 5px;
+            }
+            img {
+              display: block;
+              width: 100px;
+              border-radius: 10px;
+              height: 100px;
+              object-fit: cover;
+            }
+          }
         }
       }
+
     }
     .input {
       width: 100%;

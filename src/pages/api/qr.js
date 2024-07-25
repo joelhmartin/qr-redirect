@@ -6,39 +6,36 @@ export default async function handler(req, res) {
   let message;
 
   try {
-    console.log("Connecting to MongoDB...");
     const client = await clientPromise;
-    console.log("MongoDB client:", client);
     const db = client.db(process.env.MONGODB_DB);
-    console.log("Connected to database:", db.databaseName);
 
     if (req.method === 'GET') {
       const qrs = await db.collection('qr').find({}).toArray();
-      res.status(200).json({ qrs: qrs });
+      res.status(200).json({ qrs });
     }
 
     if (req.method === 'POST') {
-      const qrName = req.body.qr_name;
-      const addQr = await db.collection('qr').insertOne({ qr_name: qrName });
+      const { name, URL } = req.body;
+      const addQr = await db.collection('qr').insertOne({ name, URL });
       let qr = {};
       if (addQr.insertedId) {
         message = 'success';
         qr = {
-          qr_id: addQr.insertedId,
-          qr_name: qrName,
+          _id: addQr.insertedId,
+          name,
+          URL,
         };
       } else {
         message = 'error';
       }
-      res.status(200).json({ response: { message: message, qr: qr } });
+      res.status(200).json({ response: { message, qr } });
     }
 
     if (req.method === 'PUT') {
-      const qrId = req.body.qr_id;
-      const qrName = req.body.qr_name;
+      const { _id, name, URL } = req.body;
       const updateQr = await db.collection('qr').updateOne(
-        { _id: new ObjectId(qrId) },
-        { $set: { qr_name: qrName } }
+        { _id: new ObjectId(_id) },
+        { $set: { name, URL } }
       );
       const result = updateQr.modifiedCount;
       if (result) {
@@ -47,25 +44,26 @@ export default async function handler(req, res) {
         message = 'error';
       }
       const qr = {
-        qr_id: qrId,
-        qr_name: qrName,
+        _id,
+        name,
+        URL,
       };
-      res.status(200).json({ response: { message: message, qr: qr } });
+      res.status(200).json({ response: { message, qr } });
     }
 
     if (req.method === 'DELETE') {
-      const qrId = req.body.qr_id;
-      const deleteQr = await db.collection('qr').deleteOne({ _id: new ObjectId(qrId) });
+      const { _id } = req.body;
+      const deleteQr = await db.collection('qr').deleteOne({ _id: new ObjectId(_id) });
       const result = deleteQr.deletedCount;
       if (result) {
         message = 'success';
       } else {
         message = 'error';
       }
-      res.status(200).json({ response: { message: message, qr_id: qrId } });
+      res.status(200).json({ response: { message, _id } });
     }
   } catch (error) {
-    console.error("Error in API handler:", error);
+    console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
