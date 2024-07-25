@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { CiTrash } from "react-icons/ci";
 import Head from "next/head";
-import Image from "next/image";
 import styles from "@/styles/Home.module.scss";
+import { useSession } from "next-auth/client";
 
 export default function Home() {
+  const [session, loading] = useSession();
   const qrNameRef = useRef();
   const qrIDToDeleteRef = useRef();
   const qrIDToUpdateRef = useRef();
@@ -131,31 +132,24 @@ export default function Home() {
     getQrs();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return <div>You must be signed in to view this page</div>;
+  }
+
   return (
     <>
       {" "}
+      
       <Head>
-        <title>CRUD With Next.Js & MySQL Demo</title>
+        <title>QR Redirect App</title>
       </Head>
       <div className={styles.container}>
         <section className={styles.main}>
-          <h1>CRUD With Next.Js & MySQL Demo</h1>
-          {/* <p>
-            Create, Read, Update, Delete database data in React, Node, Next.js
-            and MySQL by Omar Elbaga{" "}
-            <a
-              href="https://github.com/oelbaga/nextjs-mysql"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
-          </p> */}
-          <div className={styles.heading}>
-            <a href="/api/qrs" target="_blank" rel="noreferrer">
-              Database API data
-            </a>
-          </div>
+          <h1>QR Redirect App</h1>
         </section>
         <section>
           <div className={styles.read}>
