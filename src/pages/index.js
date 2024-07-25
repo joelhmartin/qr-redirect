@@ -235,15 +235,7 @@ export default function Home() {
         </section>
         <footer>
           <p>
-            Create, Read, Update, Delete database data in React, Node and
-            Next.JS by Omar Elbaga{" "}
-            <a
-              href="https://github.com/oelbaga/nextjs-mysql"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
+            Create, Read, Update, Delete QR Redirects{" "}
           </p>
         </footer>
       </div>
