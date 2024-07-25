@@ -2,10 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { CiTrash } from "react-icons/ci";
 import Head from "next/head";
 import styles from "@/styles/Home.module.scss";
-import { useSession } from "next-auth/client";
 
 export default function Home() {
-  const [session, loading] = useSession();
   const qrNameRef = useRef();
   const qrIDToDeleteRef = useRef();
   const qrIDToUpdateRef = useRef();
@@ -132,13 +130,18 @@ export default function Home() {
     getQrs();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!session) {
-    return <div>You must be signed in to view this page</div>;
-  }
+  return (
+    <>
+      {" "}
+      
+      <Head>
+        <title>QR Redirect App</title>
+      </Head>
+      <div className={styles.container}>
+        {/* Rest of the code */}
+      </div>
+    </>
+  );
 
   return (
     <>
