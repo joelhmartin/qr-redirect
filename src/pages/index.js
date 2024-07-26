@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { CiTrash, CiEdit, CiClipboard } from "react-icons/ci";
+import { CiTrash, CiEdit } from "react-icons/ci";
 import Head from "next/head";
 import styles from "@/styles/Home.module.scss";
 
@@ -120,7 +120,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <h1>QR Redirect App</h1>
+        <title>QR Redirect App</title>
+        <meta name="description" content="Create, Read, Update, Delete QR Redirects" />
       </Head>
       <div className={styles.container}>
         <section className={styles.create}>
