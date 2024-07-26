@@ -160,6 +160,9 @@ export default function Home() {
                     <span>Destination URL</span> {item.URL}{" "}
                   </div>
                   <div className={styles.qrBit}>
+                    <span>id</span> https://qr-redirect-app-3d71bbb92e78.herokuapp.com/redirect?id={item._id}
+                  </div>
+                  <div className={styles.qrBit}>
                     <span>name</span> {item.name}{" "}
                   </div>
 

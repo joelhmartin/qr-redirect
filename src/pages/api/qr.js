@@ -13,6 +13,12 @@ const allowCors = (fn) => async (req, res) => {
   return await fn(req, res);
 };
 
+const generateQrCode = async (text) => {
+  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(text)}&format=svg`;
+  const res = await fetch(apiUrl);
+  return await res.text(); // Returns SVG text
+};
+
 async function handler(req, res) {
   let message;
 
@@ -32,9 +38,7 @@ async function handler(req, res) {
       if (addQr.insertedId) {
         message = 'success';
         const qrRedirectUrl = `${process.env.CURRENT_PAGE_URL}/redirect?id=${addQr.insertedId}`;
-        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrRedirectUrl)}&format=svg`;
-        const qrCodeRes = await fetch(qrCodeUrl);
-        const qrCodeSvg = await qrCodeRes.text();
+        const qrCodeSvg = await generateQrCode(qrRedirectUrl);
 
         qr = {
           _id: addQr.insertedId,
@@ -62,15 +66,25 @@ async function handler(req, res) {
       const result = updateQr.modifiedCount;
       if (result) {
         message = 'success';
+        const qrRedirectUrl = `${process.env.CURRENT_PAGE_URL}/redirect?id=${_id}`;
+        const qrCodeSvg = await generateQrCode(qrRedirectUrl);
+
+        await db.collection('qr').updateOne(
+          { _id: new ObjectId(_id) },
+          { $set: { qrCodeSvg } }
+        );
+
+        const qr = {
+          _id,
+          name,
+          URL,
+          qrCodeSvg,
+        };
+        res.status(200).json({ response: { message, qr } });
       } else {
         message = 'error';
+        res.status(200).json({ response: { message } });
       }
-      const qr = {
-        _id,
-        name,
-        URL,
-      };
-      res.status(200).json({ response: { message, qr } });
     }
 
     if (req.method === 'DELETE') {
