@@ -1,4 +1,3 @@
-// src/pages/api/qr.js
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
@@ -32,11 +31,22 @@ async function handler(req, res) {
       let qr = {};
       if (addQr.insertedId) {
         message = 'success';
+        const qrRedirectUrl = `${process.env.CURRENT_PAGE_URL}/redirect?id=${addQr.insertedId}`;
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrRedirectUrl)}&format=svg`;
+        const qrCodeRes = await fetch(qrCodeUrl);
+        const qrCodeSvg = await qrCodeRes.text();
+
         qr = {
           _id: addQr.insertedId,
           name,
           URL,
+          qrCodeSvg,
         };
+
+        await db.collection('qr').updateOne(
+          { _id: new ObjectId(addQr.insertedId) },
+          { $set: { qrCodeSvg } }
+        );
       } else {
         message = 'error';
       }

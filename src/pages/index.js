@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from "react";
-import { CiTrash, CiEdit } from "react-icons/ci";
+import { CiTrash, CiEdit, CiSaveDown1 } from "react-icons/ci";
 import Head from "next/head";
 import styles from "@/styles/Home.module.scss";
+require("dotenv").config();
 
 export default function Home() {
+  const indexPageUrl = "https://qr-redirect-app-3d71bbb92e78.herokuapp.com/";
   const nameRef = useRef();
   const URLRef = useRef();
   const [qrs, setQrs] = useState([]);
@@ -14,6 +16,8 @@ export default function Home() {
   const [deletedError, setDeletedError] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [updatedError, setUpdatedError] = useState(false);
+
+  console.log("indexPageUrl", indexPageUrl);
 
   async function addQr() {
     const name = nameRef.current.value.trim();
@@ -32,6 +36,7 @@ export default function Home() {
     const res = await fetch(`/api/qr`, postData);
     const response = await res.json();
     if (response.response.message !== "success") return;
+
     const newQr = response.response.qr;
     setQrs((prevQrs) => [
       ...prevQrs,
@@ -39,6 +44,7 @@ export default function Home() {
         _id: newQr._id,
         name: newQr.name,
         URL: newQr.URL,
+        qrCodeSvg: newQr.qrCodeSvg,
       },
     ]);
     setCreated(true);
@@ -110,11 +116,15 @@ export default function Home() {
   useEffect(() => {
     getQrs();
   }, []);
-  
-  const handleCopy = (url) => {
-    navigator.clipboard.writeText(url).then(() => {
-      alert('URL copied to clipboard');
-    });
+
+  const handleDownload = (svgContent, fileName) => {
+    const element = document.createElement("a");
+    const file = new Blob([svgContent], { type: "image/svg+xml" });
+    element.href = URL.createObjectURL(file);
+    element.download = fileName;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
 
   return (
@@ -125,7 +135,7 @@ export default function Home() {
       </Head>
       <div className={styles.container}>
         <section className={styles.create}>
-          <h2>Create</h2>
+          <h2>Create New QR Code</h2>
           <div className={styles.input}>
             <div className={styles.label}>Name</div>
             <input type="text" ref={nameRef} placeholder="Enter name" />
@@ -141,20 +151,31 @@ export default function Home() {
         </section>
 
         <section className={styles.read}>
-          <h2>List</h2>
+          <h2>QR Codes</h2>
           <div className={styles.qrs}>
             {qrs.map((item) => (
               <div key={item._id} className={styles.qr}>
                 <div className={styles.qrContainer}>
-                  <div className={styles.qrBit}><span>id</span> {`localhost:3000/redirect?id=${item._id}`} </div>
-                  <div className={styles.qrBit}><span>name</span> {item.name} </div>
-                  <div className={styles.qrBit}><span>URL</span> {item.URL}{" "}</div>
+                  <div className={styles.qrBit}>
+                    <span>Destination URL</span> {item.URL}{" "}
+                  </div>
+                  <div className={styles.qrBit}>
+                    <span>name</span> {item.name}{" "}
+                  </div>
+
                   <div className={styles.qrContainer}>
-                  <CiEdit className={`${styles.icons} ${styles.editIcon}`} onClick={() => setCurrentEditId(item._id)} />
-                  <CiTrash
-                    className={`${styles.icons} ${styles.trashIcon}`}
-                    onClick={() => setCurrentDeleteId(item._id)}
-                  />
+                    <CiEdit
+                      className={`${styles.icons} ${styles.editIcon}`}
+                      onClick={() => setCurrentEditId(item._id)}
+                    />
+                    <CiTrash
+                      className={`${styles.icons} ${styles.trashIcon}`}
+                      onClick={() => setCurrentDeleteId(item._id)}
+                    />
+                    <CiSaveDown1
+                      className={`${styles.icons} ${styles.downloadIcon}`}
+                      onClick={() => handleDownload(item.qrCodeSvg, `${item.name}-qr-code.svg`)}
+                    />
                   </div>
                 </div>
                 {currentEditId === item._id && (
