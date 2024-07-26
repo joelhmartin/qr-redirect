@@ -1,21 +1,21 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import styles from "@/styles/Home.module.scss";
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const RedirectToFacebook = () => {
   const router = useRouter();
   const { id } = router.query;
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
+  // Uncomment this if you need to fetch data based on id
   // useEffect(() => {
   //   async function getQrs() {
   //     if (!id) return;
 
   //     const res = await fetch(`/api/qr`, {
-  //       method: "GET",
+  //       method: 'GET',
   //       headers: {
-  //         "Content-Type": "application/json",
+  //         'Content-Type': 'application/json',
   //       },
   //     });
 
@@ -26,11 +26,11 @@ const RedirectToFacebook = () => {
   //       if (matchedQr) {
   //         window.location.href = matchedQr.URL;
   //       } else {
-  //         setError("ID not found in the database.");
+  //         setError('ID not found in the database.');
   //         setLoading(false);
   //       }
   //     } else {
-  //       setError("Failed to fetch QR codes.");
+  //       setError('Failed to fetch QR codes.');
   //       setLoading(false);
   //     }
   //   }
@@ -43,31 +43,24 @@ const RedirectToFacebook = () => {
     const appStoreUrl = 'https://apps.apple.com/us/app/facebook/id284882215';
 
     const openApp = () => {
-      // Create a hidden iframe to attempt to open the app
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
+      const now = Date.now();
+      const delay = 1500;
 
-      // Set a timeout to redirect to the App Store if the app does not open
-      setTimeout(() => {
-        window.location.href = appStoreUrl;
-      }, 2000);
+      // Attempt to open the app using the URL scheme
+      window.location.href = appScheme;
 
-      // Clean up the iframe after a short delay
+      // Polling to detect if the user is still on the same page after the delay
       setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 2500);
+        if (Date.now() - now < delay + 100) {
+          window.location.href = appStoreUrl;
+        }
+      }, delay);
     };
 
     openApp();
   }, []);
 
-  return (
-    <div>
-      Redirecting to Facebook...
-    </div>
-  );
+  return <div>Redirecting to Facebook...</div>;
 };
 
 export default RedirectToFacebook;
